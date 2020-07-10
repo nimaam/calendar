@@ -94,17 +94,26 @@ function handleEventClick(event, store, router, route, window) {
  * @param {Window} window The window object
  */
 function handleToDoClick(event, store, route, window) {
-	if (!store.state.settings.tasksEnabled) {
-		if (!isPublicOrEmbeddedRoute(route.name)) {
-			showInfo(t('calendar', 'Please ask your administrator to enable the Tasks App.'))
-		}
+
+	if (isPublicOrEmbeddedRoute(route.name)) {
 		return
 	}
 
 	const davUrlParts = event.extendedProps.davUrl.split('/')
 	const taskId = davUrlParts.pop()
 	const calendarId = davUrlParts.pop()
-	const url = `apps/tasks/#/calendars/${calendarId}/tasks/${taskId}`
 
+	const deckAppPrefix = 'app-generated--deck--board-'
+	let url
+	if (calendarId.startsWith(deckAppPrefix)) {
+		const board = calendarId.substr(deckAppPrefix.length)
+		const card = taskId.substr('card-'.length).replace('.ics', '')
+		url = `apps/deck/#/board/${board}/card/${card}`
+	} else {
+		if (!store.state.settings.tasksEnabled) {
+			showInfo(t('calendar', 'Please ask your administrator to enable the Tasks App.'))
+		}
+		url = `apps/tasks/#/calendars/${calendarId}/tasks/${taskId}`
+	}
 	window.location = window.location.protocol + '//' + window.location.host + generateUrl(url)
 }
