@@ -19,11 +19,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-import { translate as t } from '@nextcloud/l10n'
+import { translate as t } from "@nextcloud/l10n";
 import {
 	getFirstDayOfWeekFromMomentLocale,
 	getFirstDayOfYearFromMomentLocale,
-} from '../../utils/moment.js'
+} from "../../utils/moment.js";
 
 /**
  *
@@ -33,32 +33,39 @@ import {
  */
 const getFullCalendarLocale = (userLocale, momentLocale) => {
 	return {
-		code: userLocale.replace('_', '-').toLowerCase(),
+		code: userLocale.replace("_", "-").toLowerCase(),
 		week: {
-			dow: getFirstDayOfWeekFromMomentLocale(momentLocale),
+			dow: (function () {
+				if (moment.locale() == "fa") {
+					// FIXME
+					// ACTUALLY THE JALALI MOMOENT METHOD SHOULD BE RETURNED
+					return fgetFirstDayOfWeekFromMomentLocale(momentLocale);
+				} else {
+					return fgetFirstDayOfWeekFromMomentLocale(momentLocale);
+				}
+			})(),
+			//dow: fgetFirstDayOfWeekFromMomentLocale(momentLocale),
 			doy: getFirstDayOfYearFromMomentLocale(momentLocale),
 		},
-		direction: 'ltr', // TODO - fix me
+		direction: "ltr", // TODO - fix me
 		buttonText: {
-			prev: t('calendar', 'prev'),
-			next: t('calendar', 'next'),
-			prevYear: t('calendar', 'prev year'),
-			nextYear: t('calendar', 'next year'),
-			year: t('calendar', 'year'),
-			today: t('calendar', 'today'),
-			month: t('calendar', 'month'),
-			week: t('calendar', 'week'),
-			day: t('calendar', 'day'),
-			list: t('calendar', 'list'),
+			prev: t("calendar", "prev"),
+			next: t("calendar", "next"),
+			prevYear: t("calendar", "prev year"),
+			nextYear: t("calendar", "next year"),
+			year: t("calendar", "year"),
+			today: t("calendar", "today"),
+			month: t("calendar", "month"),
+			week: t("calendar", "week"),
+			day: t("calendar", "day"),
+			list: t("calendar", "list"),
 		},
 		// TRANSLATORS W is an abbreviation for Week
-		weekText: t('calendar', 'W'),
-		allDayText: t('calendar', 'all-day'),
-		moreLinkText: (n) => t('calendar', '%n more', {}, n),
-		noEventsText: t('calendar', 'No events to display'),
-	}
-}
+		weekText: t("calendar", "W"),
+		allDayText: t("calendar", "all-day"),
+		moreLinkText: (n) => t("calendar", "%n more", {}, n),
+		noEventsText: t("calendar", "No events to display"),
+	};
+};
 
-export {
-	getFullCalendarLocale,
-}
+export { getFullCalendarLocale };
